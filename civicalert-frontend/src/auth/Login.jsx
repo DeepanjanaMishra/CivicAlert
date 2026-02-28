@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Login = () => {
+const Login = ({ goToSignup, onLogin }) => {   // ⭐ FIX 1
 
   const [role, setRole] = useState("Citizen");
   const [email, setEmail] = useState("");
@@ -11,6 +11,8 @@ const Login = () => {
     console.log("Role:", role);
     console.log("Email:", email);
     console.log("Password:", password);
+
+    onLogin(role);   // ⭐ FIX 2 (MOST IMPORTANT)
 
   };
 
@@ -30,15 +32,11 @@ const Login = () => {
           {/* LOGO */}
           <img
             src="/logo.png"
-            alt="CiviCAlert Logo"
-            className="w-700 mb-6 drop-shadow-xl"
+            alt="CivicAlert Logo"
+            className="w-700 mb-6 drop-shadow-xl"   // ⭐ FIX 3
           />
 
 
-         
-
-
-          {/* TAGLINE */}
           <p className="text-center text-lg opacity-90">
 
             AI-Powered Emotion & Context-Aware  
@@ -53,78 +51,62 @@ const Login = () => {
 
 
         {/* RIGHT SECTION */}
-        <div className="w-full md:w-1/2 p-10">
+<div className="w-full md:w-1/2 p-10">
+
+  <h2 className="text-3xl font-bold mb-6 text-gray-800">
+    Login
+  </h2>
 
 
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">
-            Login
-          </h2>
+  {/* EMAIL */}
+  <input
+    type="email"
+    placeholder="Email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
 
 
-
-          {/* ROLE */}
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-
-            <option>Citizen</option>
-            <option>Authority</option>
-
-          </select>
+  {/* PASSWORD */}
+  <input
+    type="password"
+    placeholder="Password"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    className="w-full mb-6 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
 
 
+  {/* LOGIN BUTTON */}
+  <button
+    onClick={handleLogin}
+    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold shadow-md"
+  >
 
-          {/* EMAIL */}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    Login
 
-
-
-          {/* PASSWORD */}
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-6 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+  </button>
 
 
+  {/* SIGNUP */}
+  <p className="text-center mt-6 text-gray-600">
 
-          {/* BUTTON */}
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold shadow-md"
-          >
+    Don't have an account?
 
-            Login
+    <span
+      onClick={goToSignup}
+      className="text-blue-600 font-semibold cursor-pointer ml-2 hover:underline"
+    >
 
-          </button>
+      Sign up
 
+    </span>
 
-
-          {/* SIGNUP */}
-          <p className="text-center mt-6 text-gray-600">
-
-            Don't have an account?
-
-            <span className="text-blue-600 font-semibold cursor-pointer ml-2 hover:underline">
-
-              Sign up
-
-            </span>
-
-          </p>
+  </p>
 
 
-        </div>
+</div>
 
 
       </div>

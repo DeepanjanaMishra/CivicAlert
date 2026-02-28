@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import Login from "./auth/Login";
-import Signup from "./auth/signUp";
+import Signup from "./auth/Signup";
 
 import CitizenDashboard from "./citizen/CitizenDashboard";
 import AuthorityDashboard from "./authority/AuthorityDashboard";
@@ -13,27 +13,37 @@ function App(){
   const [role, setRole] = useState(null);
 
 
-  if(role === "citizen")
-    return <CitizenDashboard/>
+  // ROLE BASED DASHBOARD
+
+  if(role === "Citizen")
+    return <CitizenDashboard onLogout={() => setRole(null)} />;
 
 
-  if(role === "authority")
-    return <AuthorityDashboard/>
+  if(role === "Authority")
+    return <AuthorityDashboard onLogout={() => setRole(null)} />;
 
 
-  if(role === "admin")
-    return <AdminDashboard/>
+  if(role === "Admin")
+    return <AdminDashboard onLogout={() => setRole(null)} />;
 
+
+  // SIGNUP PAGE
 
   if(page === "signup")
-    return <Signup goToLogin={()=>setPage("login")} />
+    return (
+      <Signup 
+        goToLogin={()=>setPage("login")} 
+      />
+    );
 
+
+  // LOGIN PAGE
 
   return (
 
     <Login
       goToSignup={()=>setPage("signup")}
-      onLogin={(r)=>setRole(r)}
+      onLogin={(selectedRole)=>setRole(selectedRole)}
     />
 
   );
