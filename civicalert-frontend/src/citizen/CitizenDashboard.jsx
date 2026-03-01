@@ -129,6 +129,14 @@ const CitizenDashboard = ({ onLogout }) => {
             My Complaints
           </button>
 
+          <button
+            onClick={() => setActive("details")}
+            className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded"
+          >
+            <FileText size={20} />
+            Complaint Details
+          </button>
+
 
 
           <button className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded">
@@ -359,6 +367,113 @@ const CitizenDashboard = ({ onLogout }) => {
           </div>
 
         )}
+        {/* COMPLAINT DETAILS */}
+
+{active === "details" && (
+
+  <div className="bg-white p-6 rounded-xl shadow max-w-2xl">
+
+    <h2 className="text-2xl font-semibold mb-4">
+      Complaint Details
+    </h2>
+
+
+    {/* Complaint ID */}
+
+    <p className="mb-2">
+      <span className="font-semibold">Complaint ID:</span> CA1023
+    </p>
+
+
+
+    {/* Audio */}
+
+    <div className="mb-4">
+
+      <p className="font-semibold mb-1">
+        Audio:
+      </p>
+
+      <audio controls src={audioURL}></audio>
+
+    </div>
+
+
+
+    {/* Transcription */}
+
+    <div className="mb-4">
+
+      <p className="font-semibold">
+        Transcription:
+      </p>
+
+      <p className="bg-gray-100 p-3 rounded mt-1">
+
+        Street light is not working and area is unsafe at night.
+
+      </p>
+
+    </div>
+
+
+
+    {/* Emotion */}
+
+    <div className="mb-4">
+
+      <p className="font-semibold">
+        Emotion Detected:
+      </p>
+
+      <span className="text-red-600 font-bold">
+
+        Angry 😠
+
+      </span>
+
+    </div>
+
+
+
+    {/* Urgency */}
+
+    <div className="mb-4">
+
+      <p className="font-semibold">
+        Urgency Score:
+      </p>
+
+      <span className="bg-red-100 text-red-700 px-3 py-1 rounded">
+
+        High Priority
+
+      </span>
+
+    </div>
+
+
+
+    {/* Status */}
+
+    <div>
+
+      <p className="font-semibold">
+        Status:
+      </p>
+
+      <span className="text-yellow-600 font-semibold">
+
+        In Progress
+
+      </span>
+
+    </div>
+
+
+  </div>
+
+)}
 
 
 
