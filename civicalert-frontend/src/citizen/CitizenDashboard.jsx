@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Mic, FileText, History, User, LogOut } from "lucide-react";
 
-const CitizenDashboard = () => {
+const CitizenDashboard = ({ onLogout }) => {   // ⭐ FIX 1 (receive prop)
 
   const [active, setActive] = useState("dashboard");
 
@@ -18,7 +18,7 @@ const CitizenDashboard = () => {
         </div>
 
 
-        <nav className="flex flex-col p-4 space-y-3">
+        <nav className="flex flex-col p-4 space-y-3 flex-grow">
 
           <button
             onClick={() => setActive("dashboard")}
@@ -55,16 +55,23 @@ const CitizenDashboard = () => {
           </button>
 
 
-          <button
-            className="flex items-center gap-3 hover:bg-red-600 p-3 rounded mt-auto"
-          >
-            <LogOut size={20} />
-            Logout
-          </button>
-
         </nav>
 
+
+
+        {/* LOGOUT BUTTON */}
+
+        <button
+          onClick={onLogout}   // ⭐ FIX 2 (call logout)
+          className="flex items-center gap-3 hover:bg-red-600 p-3 rounded m-4"
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
+
+
       </div>
+
 
 
 
@@ -85,6 +92,7 @@ const CitizenDashboard = () => {
           <div className="grid grid-cols-3 gap-6">
 
             <div className="bg-white p-6 rounded-xl shadow">
+
               <h2 className="text-xl font-semibold">
                 Total Complaints
               </h2>

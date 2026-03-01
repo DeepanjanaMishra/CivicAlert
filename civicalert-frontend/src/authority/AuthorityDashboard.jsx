@@ -1,119 +1,166 @@
-import React from "react";
+import React, { useState } from "react";
+import { LayoutDashboard, FileText, AlertTriangle, User, LogOut } from "lucide-react";
 
 const AuthorityDashboard = ({ user, onLogout }) => {
 
-  const complaints = [
+  const [active, setActive] = useState("dashboard");
 
+  const complaints = [
     {
       id: 1,
-      text: "Street light not working",
+      issue: "Street light not working",
+      citizen: "Rahul",
       priority: "High",
-      status: "Pending",
-      citizen: "Rahul"
+      status: "Pending"
     },
-
     {
       id: 2,
-      text: "Water leakage",
+      issue: "Water leakage",
+      citizen: "Amit",
       priority: "Medium",
-      status: "In Progress",
-      citizen: "Amit"
+      status: "In Progress"
     }
-
   ];
-
 
 
   return (
 
-    <div className="min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100">
 
 
-      {/* HEADER */}
+      {/* SIDEBAR */}
 
-      <div className="bg-blue-900 text-white p-4 flex justify-between">
-
-        <h1 className="text-xl font-bold">
-          CivicAlert Authority Panel
-        </h1>
+      <div className="w-64 bg-blue-900 text-white flex flex-col">
 
 
-        <div>
+        <div className="p-5 text-2xl font-bold border-b border-blue-700">
+          CivicAlert
+        </div>
 
-          Welcome, {user?.name}
+
+        <nav className="flex flex-col p-4 space-y-2">
+
+          <button
+            onClick={() => setActive("dashboard")}
+            className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded"
+          >
+            <LayoutDashboard size={20}/>
+            Dashboard
+          </button>
+
+
+          <button
+            onClick={() => setActive("complaints")}
+            className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded"
+          >
+            <FileText size={20}/>
+            Complaints
+          </button>
+
+
+          <button
+            onClick={() => setActive("priority")}
+            className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded"
+          >
+            <AlertTriangle size={20}/>
+            Priority Cases
+          </button>
+
+
+          <button
+            className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded"
+          >
+            <User size={20}/>
+            Profile
+          </button>
+
 
           <button
             onClick={onLogout}
-            className="ml-4 bg-red-500 px-3 py-1 rounded"
+            className="flex items-center gap-3 p-3 hover:bg-red-600 rounded mt-auto"
           >
+            <LogOut size={20}/>
             Logout
           </button>
 
-        </div>
+
+        </nav>
+
 
       </div>
 
 
 
-      {/* CONTENT */}
+      {/* MAIN */}
 
-      <div className="p-6">
-
-
-        <h2 className="text-2xl font-bold mb-4">
-          Complaints
-        </h2>
+      <div className="flex-1 p-6">
 
 
-
-        <div className="grid gap-4">
-
-
-          {complaints.map(c => (
-
-            <div
-              key={c.id}
-              className="bg-white p-4 rounded shadow"
-            >
-
-              <h3 className="font-semibold">
-                {c.text}
-              </h3>
+        <h1 className="text-3xl font-bold mb-6">
+          Authority Dashboard
+        </h1>
 
 
-              <p>
-                Citizen: {c.citizen}
-              </p>
 
+        {active === "dashboard" && (
 
-              <p>
-                Priority:
-                <span className={
-                  c.priority === "High"
-                  ? "text-red-600 font-bold"
-                  : "text-yellow-600 font-bold"
-                }>
-                  {" "}{c.priority}
-                </span>
-              </p>
+          <div className="grid grid-cols-3 gap-6">
 
-
-              <p>Status: {c.status}</p>
-
-
-              <button className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">
-
-                Mark Resolved
-
-              </button>
-
-
+            <div className="bg-white p-6 rounded shadow">
+              Total Complaints
+              <p className="text-2xl font-bold text-blue-600">120</p>
             </div>
 
-          ))}
+            <div className="bg-white p-6 rounded shadow">
+              Pending
+              <p className="text-2xl font-bold text-yellow-600">35</p>
+            </div>
+
+            <div className="bg-white p-6 rounded shadow">
+              Resolved
+              <p className="text-2xl font-bold text-green-600">85</p>
+            </div>
+
+          </div>
+
+        )}
 
 
-        </div>
+
+        {active === "complaints" && (
+
+          <div className="space-y-4">
+
+            {complaints.map(c => (
+
+              <div key={c.id} className="bg-white p-4 shadow rounded">
+
+                <h3 className="font-semibold">{c.issue}</h3>
+
+                <p>Citizen: {c.citizen}</p>
+
+                <p>
+                  Priority:
+                  <span className={
+                    c.priority === "High"
+                    ? "text-red-600 font-bold"
+                    : "text-yellow-600 font-bold"
+                  }>
+                    {" "}{c.priority}
+                  </span>
+                </p>
+
+                <button className="mt-2 bg-blue-600 text-white px-4 py-1 rounded">
+                  Resolve
+                </button>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
 
 
       </div>
