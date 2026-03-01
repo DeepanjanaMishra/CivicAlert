@@ -54,7 +54,7 @@ const Login = ({ goToSignup, onLogin }) => {
           <img
             src="/logo.png"
             alt="CivicAlert Logo"
-            className="w-40 mb-6 drop-shadow-xl"
+            className="w-700 mb-6 drop-shadow-xl"
           />
 
 
