@@ -139,12 +139,22 @@ const CitizenDashboard = ({ onLogout }) => {
 
 
 
-          <button className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded">
-
-            <User size={20}/>
+          <button
+            onClick={() => setActive("profile")}
+            className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded"
+          >
+            <User size={20} />
             Profile
-
           </button>
+
+
+          <button
+            onClick={() => setActive("settings")}
+            className="flex items-center gap-3 hover:bg-blue-700 p-3 rounded"
+          >
+            ⚙ Settings
+          </button>
+
 
 
         </nav>
@@ -474,6 +484,225 @@ const CitizenDashboard = ({ onLogout }) => {
   </div>
 
 )}
+    {/* PROFILE */}
+
+      {active === "profile" && (
+
+        <div className="bg-white p-8 rounded-xl shadow max-w-xl">
+
+          <h2 className="text-2xl font-semibold mb-6">
+            My Profile
+          </h2>
+
+
+          {/* Profile Image */}
+
+          <div className="flex items-center gap-4 mb-6">
+
+            <div className="w-20 h-20 bg-blue-200 rounded-full flex items-center justify-center text-2xl font-bold text-blue-800">
+
+              C
+
+            </div>
+
+            <button className="text-blue-600 hover:underline">
+
+              Edit Photo
+
+            </button>
+
+          </div>
+
+
+
+          {/* Name */}
+
+          <div className="mb-4">
+
+            <label className="block font-semibold mb-1">
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              value="Citizen User"
+              className="w-full border p-2 rounded"
+            />
+
+          </div>
+
+
+
+          {/* Email */}
+
+          <div className="mb-4">
+
+            <label className="block font-semibold mb-1">
+              Email
+            </label>
+
+            <input
+              type="email"
+              value="citizen@gmail.com"
+              className="w-full border p-2 rounded"
+            />
+
+          </div>
+
+
+
+          {/* Phone */}
+
+          <div className="mb-4">
+
+            <label className="block font-semibold mb-1">
+              Phone
+            </label>
+
+            <input
+              type="text"
+              value="+91 9876543210"
+              className="w-full border p-2 rounded"
+            />
+
+          </div>
+
+
+
+          {/* Role */}
+
+          <div className="mb-6">
+
+            <label className="block font-semibold mb-1">
+              Role
+            </label>
+
+            <input
+              type="text"
+              value="Citizen"
+              disabled
+              className="w-full border p-2 rounded bg-gray-100"
+            />
+
+          </div>
+
+
+
+          {/* Save Button */}
+
+          <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+
+            Save Changes
+
+          </button>
+
+
+        </div>
+
+      )}
+
+      {/* SETTINGS */}
+
+      {active === "settings" && (
+
+        <div className="bg-white p-8 rounded-xl shadow max-w-xl">
+
+          <h2 className="text-2xl font-semibold mb-6">
+            Settings
+          </h2>
+
+
+          {/* Language */}
+
+          <div className="mb-6">
+
+            <label className="block font-semibold mb-2">
+              Language
+            </label>
+
+            <select className="w-full border p-2 rounded">
+
+              <option>English</option>
+              <option>Hindi</option>
+              <option>Hinglish</option>
+
+            </select>
+
+          </div>
+
+
+
+          {/* Notifications */}
+
+          <div className="mb-6 flex items-center justify-between">
+
+            <span className="font-semibold">
+              Enable Notifications
+            </span>
+
+            <input type="checkbox" defaultChecked />
+
+          </div>
+
+
+
+          {/* Dark Mode */}
+
+        { /* <div className="mb-6 flex items-center justify-between">
+
+            <span className="font-semibold">
+              Dark Mode
+            </span>
+
+            <input type="checkbox" />
+
+          </div>*/}
+
+
+
+          {/* Change Password */}
+
+          <div className="mb-6">
+
+            <label className="block font-semibold mb-2">
+              Change Password
+            </label>
+
+            <input
+              type="password"
+              placeholder="Enter new password"
+              className="w-full border p-2 rounded"
+            />
+
+          </div>
+
+
+
+          {/* Save Button */}
+
+          <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+
+            Save Settings
+
+          </button>
+
+
+
+          {/* Logout Button */}
+
+          <button
+            onClick={onLogout}
+            className="ml-4 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600"
+          >
+
+            Logout
+
+          </button>
+
+
+        </div>
+
+      )}
 
 
 
