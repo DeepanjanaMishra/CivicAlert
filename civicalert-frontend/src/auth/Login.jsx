@@ -1,20 +1,42 @@
 import React, { useState } from "react";
 
-const Login = ({ goToSignup, onLogin }) => {   // ⭐ FIX 1
+const Login = ({ goToSignup, onLogin }) => {
 
-  const [role, setRole] = useState("Citizen");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
 
-    console.log("Role:", role);
-    console.log("Email:", email);
-    console.log("Password:", password);
+    let userRole = "";
 
-    onLogin(role);   // ⭐ FIX 2 (MOST IMPORTANT)
+    if(email === "citizen@gmail.com")
+      userRole = "Citizen";
+
+    else if(email === "authority@gmail.com")
+      userRole = "Authority";
+
+    else if(email === "admin@gmail.com")
+      userRole = "Admin";
+
+    else{
+      alert("User not found");
+      return;
+    }
+
+
+    const user = {
+
+      name: email.split("@")[0],
+      email: email,
+      role: userRole
+
+    };
+
+
+    onLogin(user);   // ✅ MUST be inside handleLogin
 
   };
+
 
   return (
 
@@ -29,11 +51,10 @@ const Login = ({ goToSignup, onLogin }) => {   // ⭐ FIX 1
         <div className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-br from-blue-800 via-blue-600 to-cyan-500 text-white p-12">
 
 
-          {/* LOGO */}
           <img
             src="/logo.png"
             alt="CivicAlert Logo"
-            className="w-700 mb-6 drop-shadow-xl"   // ⭐ FIX 3
+            className="w-40 mb-6 drop-shadow-xl"
           />
 
 
@@ -51,62 +72,55 @@ const Login = ({ goToSignup, onLogin }) => {   // ⭐ FIX 1
 
 
         {/* RIGHT SECTION */}
-<div className="w-full md:w-1/2 p-10">
-
-  <h2 className="text-3xl font-bold mb-6 text-gray-800">
-    Login
-  </h2>
+        <div className="w-full md:w-1/2 p-10">
 
 
-  {/* EMAIL */}
-  <input
-    type="email"
-    placeholder="Email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
+          <h2 className="text-3xl font-bold mb-6 text-gray-800">
+            Login
+          </h2>
 
 
-  {/* PASSWORD */}
-  <input
-    type="password"
-    placeholder="Password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    className="w-full mb-6 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-  />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
+            className="w-full mb-4 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
 
-  {/* LOGIN BUTTON */}
-  <button
-    onClick={handleLogin}
-    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold shadow-md"
-  >
-
-    Login
-
-  </button>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
+            className="w-full mb-6 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
 
-  {/* SIGNUP */}
-  <p className="text-center mt-6 text-gray-600">
-
-    Don't have an account?
-
-    <span
-      onClick={goToSignup}
-      className="text-blue-600 font-semibold cursor-pointer ml-2 hover:underline"
-    >
-
-      Sign up
-
-    </span>
-
-  </p>
+          <button
+            onClick={handleLogin}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold shadow-md"
+          >
+            Login
+          </button>
 
 
-</div>
+          <p className="text-center mt-6 text-gray-600">
+
+            Don't have an account?
+
+            <span
+              onClick={goToSignup}
+              className="text-blue-600 font-semibold cursor-pointer ml-2 hover:underline"
+            >
+              Sign up
+            </span>
+
+          </p>
+
+
+        </div>
 
 
       </div>

@@ -10,24 +10,26 @@ import AdminDashboard from "./admin/AdminDashboard";
 function App(){
 
   const [page, setPage] = useState("login");
-  const [role, setRole] = useState(null);
+
+  const [user, setUser] = useState(null);   // ⭐ store full user
 
 
-  // ROLE BASED DASHBOARD
+  // DASHBOARD ROUTING
 
-  if(role === "Citizen")
-    return <CitizenDashboard onLogout={() => setRole(null)} />;
-
-
-  if(role === "Authority")
-    return <AuthorityDashboard onLogout={() => setRole(null)} />;
+  if(user?.role === "Citizen")
+    return <CitizenDashboard user={user} onLogout={() => setUser(null)} />;
 
 
-  if(role === "Admin")
-    return <AdminDashboard onLogout={() => setRole(null)} />;
+  if(user?.role === "Authority")
+    return <AuthorityDashboard user={user} onLogout={() => setUser(null)} />;
 
 
-  // SIGNUP PAGE
+  if(user?.role === "Admin")
+    return <AdminDashboard user={user} onLogout={() => setUser(null)} />;
+
+
+
+  // SIGNUP
 
   if(page === "signup")
     return (
@@ -37,13 +39,14 @@ function App(){
     );
 
 
-  // LOGIN PAGE
+
+  // LOGIN
 
   return (
 
     <Login
       goToSignup={()=>setPage("signup")}
-      onLogin={(selectedRole)=>setRole(selectedRole)}
+      onLogin={(loggedInUser)=>setUser(loggedInUser)}
     />
 
   );
