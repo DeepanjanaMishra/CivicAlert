@@ -13,36 +13,56 @@ const AuthorityDashboard = ({ user, onLogout }) => {
 
   const [active, setActive] = useState("dashboard");
 
-  const complaints = [
+  const [complaints, setComplaints] = useState([
 
-    {
-      id: "CA101",
-      issue: "Street light not working in Sector 18",
-      citizen: "Rahul Sharma",
-      emotion: "Angry",
-      priority: "High",
-      urgency: 92,
-      status: "Pending",
-      date: "2026-03-01"
-    },
+  {
+    id: "CA101",
+    issue: "Street light not working in Sector 18",
+    citizen: "Rahul Sharma",
+    emotion: "Angry",
+    priority: "High",
+    urgency: 92,
+    status: "Pending"
+  },
 
-    {
-      id: "CA102",
-      issue: "Water leakage near main road",
-      citizen: "Amit Verma",
-      emotion: "Concerned",
-      priority: "Medium",
-      urgency: 68,
-      status: "In Progress",
-      date: "2026-02-28"
-    }
+  {
+    id: "CA102",
+    issue: "Water leakage near main road",
+    citizen: "Amit Verma",
+    emotion: "Concerned",
+    priority: "Medium",
+    urgency: 68,
+    status: "In Progress"
+  }
 
-  ];
+]);
 
   const priorityComplaints =
     complaints.filter(c => c.priority === "High");
 
+const resolveComplaint = (id) => {
 
+  const updated = complaints.map(c => {
+
+    if(c.id === id){
+
+      return {
+
+        ...c,
+
+        status: "Resolved"
+
+      };
+
+    }
+
+    return c;
+
+  });
+
+  setComplaints(updated);
+
+};
 
   return (
 
@@ -153,7 +173,9 @@ const AuthorityDashboard = ({ user, onLogout }) => {
 
             {complaints.map(c => (
 
-              <ComplaintCard complaint={c}/>
+              <ComplaintCard 
+              complaint={c}
+              resolveComplaint={resolveComplaint}/>
 
             ))}
 
@@ -182,7 +204,8 @@ const AuthorityDashboard = ({ user, onLogout }) => {
 
             {priorityComplaints.map(c => (
 
-              <ComplaintCard complaint={c} highlight/>
+              <ComplaintCard complaint={c} highlight
+              resolveComplaint={resolveComplaint}/>
 
             ))}
 
@@ -500,7 +523,7 @@ const StatCard = ({ title, value, color }) => (
 
 
 
-const ComplaintCard = ({ complaint, highlight }) => (
+const ComplaintCard = ({ complaint, highlight, resolveComplaint }) => (
 
   <div className={`border p-4 mb-4 rounded ${highlight && "bg-red-50"}`}>
 
@@ -542,13 +565,42 @@ const ComplaintCard = ({ complaint, highlight }) => (
       </span>
 
     </p>
+    <p>
+
+Status:
+
+<span className={`ml-2 font-bold ${
+  complaint.status === "Resolved"
+  ? "text-green-600"
+  : complaint.status === "Pending"
+  ? "text-yellow-600"
+  : "text-blue-600"
+}`}>
+
+  {complaint.status}
+
+</span>
+
+</p>
 
 
-    <button className="mt-2 bg-green-600 text-white px-4 py-1 rounded">
+    {
+complaint.status !== "Resolved" && (
 
-      Mark Resolved
+  <button
 
-    </button>
+    onClick={() => resolveComplaint(complaint.id)}
+
+    className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
+
+  >
+
+    Resolve Complaint
+
+  </button>
+
+)
+}
 
 
   </div>
