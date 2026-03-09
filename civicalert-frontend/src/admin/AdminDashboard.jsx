@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -13,40 +13,42 @@ import {
 const AdminDashboard = ({ user, onLogout }) => {
 
   const [active, setActive] = useState("dashboard");
+  const [complaints, setComplaints] = useState([]);
+  const [users, setUsers] = useState([]);
+  const totalComplaints = complaints.length;
 
+const pendingComplaints =
+  complaints.filter(c => c.status === "Pending").length;
 
-  // Dummy data
+const resolvedComplaints =
+  complaints.filter(c => c.status === "Resolved").length;
 
-  const [users, setUsers] = useState([
+const highUrgency =
+  complaints.filter(c => c.urgencyScore > 70).length;
 
-  { id: 1, name: "Rahul Sharma", role: "Citizen", status: "Active" },
+  const angryComplaints =
+  complaints.filter(c => c.emotion === "angry").length;
 
-  { id: 2, name: "Amit Verma", role: "Authority", status: "Active" },
+const averageUrgency =
+  complaints.length > 0
+    ? Math.round(
+        complaints.reduce((sum, c) => sum + (c.urgencyScore || 0), 0) /
+        complaints.length
+      )
+    : 0;
 
-  { id: 3, name: "Priya Singh", role: "Citizen", status: "Blocked" }
-
-]);
-
-
-  const complaints = [
-
-    { id: "CA101", issue: "Street light not working", urgency: 92 },
-
-    { id: "CA102", issue: "Water leakage", urgency: 68 }
-
-  ];
+  
   const toggleStatus = (id) => {
 
-  const updatedUsers = users.map(user => {
-
-    if(user.id === id){
+  const updatedUsers = users.map(u=> {
+        if(u._id === id){
 
       return {
 
-        ...user,
+        ...u,
 
         status:
-          user.status === "Active"
+          u.status === "Active"
           ? "Blocked"
           : "Active"
 
@@ -54,13 +56,71 @@ const AdminDashboard = ({ user, onLogout }) => {
 
     }
 
-    return user;
+    return u;
 
   });
 
   setUsers(updatedUsers);
 
 };
+  const fetchComplaints = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://localhost:5000/api/complaints",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    setComplaints(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+const fetchUsers = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://localhost:5000/api/users",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    setUsers(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+useEffect(() => {
+
+  fetchComplaints();
+  fetchUsers();
+
+}, []);
 
 
 
@@ -139,21 +199,60 @@ const AdminDashboard = ({ user, onLogout }) => {
 
         {active === "dashboard" && (
 
-          <div className="grid grid-cols-4 gap-6">
+  <div>
+
+    {/* ADMIN STATS */}
+    <div className="grid grid-cols-4 gap-6">
+
+      <StatCard title="Total Complaints" value={totalComplaints} />
+
+      <StatCard title="Pending" value={pendingComplaints} color="yellow" />
+
+      <StatCard title="Resolved" value={resolvedComplaints} color="green" />
+
+      <StatCard title="High Urgency" value={highUrgency} color="red" />
+
+    </div>
 
 
-            <StatCard title="Total Users" value="120"/>
+    {/* ADMIN COMPLAINT LIST */}
+    <div className="bg-white p-6 rounded shadow mt-6">
 
-            <StatCard title="Authorities" value="12"/>
+      <h2 className="text-xl font-semibold mb-4">
+        All Complaints
+      </h2>
 
-            <StatCard title="Complaints" value="540"/>
+      {complaints.map((c) => (
 
-            <StatCard title="Resolved Rate" value="81%"/>
+        <div key={c._id} className="border p-4 mb-3 rounded">
 
+          <p className="font-semibold">{c.complaintText}</p>
 
-          </div>
+          <p>Citizen: {c.citizenId?.name}</p>
 
-        )}
+          <p>
+            Status:
+            <span className="ml-2 font-bold">
+              {c.status}
+            </span>
+          </p>
+
+          <p>
+            Urgency Score:
+            <span className="ml-2 font-bold">
+              {c.urgencyScore}
+            </span>
+          </p>
+
+        </div>
+
+      ))}
+
+    </div>
+
+  </div>
+
+)}
 
 
 
@@ -164,10 +263,10 @@ const AdminDashboard = ({ user, onLogout }) => {
 
           <Section title="User Management">
 
-            {users.map(u => (
+            {users.filter(u => u.role.toLowerCase() === "citizen").map(u => (
 
   <div
-    key={u.id}
+    key={u._id}
     className="border p-4 rounded mb-3 flex justify-between items-center"
   >
 
@@ -238,10 +337,12 @@ const AdminDashboard = ({ user, onLogout }) => {
           <Section title="Authority Management">
 
             {users
-              .filter(u => u.role === "Authority")
+              .filter(u => u.role.toLowerCase() === "authority")
               .map(u => (
 
-                <div className="border p-4 rounded mb-3 flex justify-between">
+                <div 
+                key={u._id}
+                className="border p-4 rounded mb-3 flex justify-between">
 
                   <p>{u.name}</p>
 
@@ -274,33 +375,43 @@ const AdminDashboard = ({ user, onLogout }) => {
 
         {active === "complaints" && (
 
-          <Section title="Complaint Monitoring">
+  <Section title="Complaint Monitoring">
 
-            {complaints.map(c => (
+    {complaints.map(c => (
 
-              <div className="border p-4 rounded mb-3">
+      <div key={c._id} className="border p-4 rounded mb-3">
 
-                <p className="font-semibold">
+        <p className="font-semibold">
 
-                  {c.issue}
+          {c.complaintText}
 
-                </p>
+        </p>
 
-                Urgency Score:
+        <p>
 
-                <span className="font-bold">
+          Citizen: {c.citizenId?.name}
 
-                  {" "}{c.urgency}
+        </p>
 
-                </span>
+        <p>
 
-              </div>
+          Urgency Score:
 
-            ))}
+          <span className="font-bold ml-2">
 
-          </Section>
+            {c.urgencyScore}
 
-        )}
+          </span>
+
+        </p>
+
+      </div>
+
+    ))}
+
+  </Section>
+
+)}
 
 
 
@@ -309,17 +420,35 @@ const AdminDashboard = ({ user, onLogout }) => {
 
         {active === "analytics" && (
 
-          <div className="grid grid-cols-3 gap-6">
+  <div>
 
-            <StatCard title="High Urgency" value="84"/>
+    <div className="grid grid-cols-3 gap-6 mb-6">
 
-            <StatCard title="Angry Emotion" value="42"/>
+      <StatCard title="High Urgency Complaints" value={highUrgency}/>
 
-            <StatCard title="Avg Score" value="73"/>
+      <StatCard title="Angry Emotion Complaints" value={angryComplaints}/>
 
-          </div>
+      <StatCard title="Average Urgency Score" value={averageUrgency}/>
 
-        )}
+    </div>
+
+    <div className="bg-white p-6 rounded shadow">
+
+      <h2 className="text-xl font-semibold mb-4">
+        Complaint Distribution
+      </h2>
+
+      <p>Total Complaints: {totalComplaints}</p>
+
+      <p>Pending: {pendingComplaints}</p>
+
+      <p>Resolved: {resolvedComplaints}</p>
+
+    </div>
+
+  </div>
+
+)}
 
 
 
