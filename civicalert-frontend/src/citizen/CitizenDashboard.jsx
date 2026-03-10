@@ -1,10 +1,14 @@
 import React, { useState, useRef } from "react";
 import { Mic, FileText, History, User, LogOut } from "lucide-react";
-
-const CitizenDashboard = ({ onLogout }) => {
+import { useEffect } from "react";
+const CitizenDashboard = ({ user, onLogout }) => {
 
   const [active, setActive] = useState("dashboard");
+  const [myComplaints, setMyComplaints] = useState([]);
 
+  const totalComplaints = myComplaints.length;
+  const pendingComplaints = myComplaints.filter(c => c.status === "Pending").length;
+  const resolvedComplaints = myComplaints.filter(c => c.status === "Resolved").length;
   // 🎤 Voice Recording States
 
   const [recording, setRecording] = useState(false);
@@ -79,6 +83,84 @@ const CitizenDashboard = ({ onLogout }) => {
     }
 
   };
+
+  const submitComplaint = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5000/api/complaints", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+
+      body: JSON.stringify({
+        complaintText: "Voice complaint submitted"
+      })
+
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Complaint submission failed");
+      return;
+    }
+
+    alert("Complaint submitted successfully!");
+
+    setAudioURL(null);
+
+  } catch (error) {
+
+    console.error(error);
+    alert("Server error");
+
+  }
+
+};
+
+  const fetchMyComplaints = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://localhost:5000/api/complaints/my",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    setMyComplaints(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+
+  useEffect(() => {
+
+  if (active === "history" || active === "dashboard") {
+
+    fetchMyComplaints();
+
+  }
+
+}, [active]);
 
 
 
@@ -205,7 +287,7 @@ const CitizenDashboard = ({ onLogout }) => {
 
               <p className="text-3xl text-blue-600 mt-2">
 
-                12
+                {totalComplaints}
 
               </p>
 
@@ -219,7 +301,7 @@ const CitizenDashboard = ({ onLogout }) => {
 
               <p className="text-3xl text-yellow-500 mt-2">
 
-                4
+                {pendingComplaints}
 
               </p>
 
@@ -233,7 +315,7 @@ const CitizenDashboard = ({ onLogout }) => {
 
               <p className="text-3xl text-green-600 mt-2">
 
-                8
+                {resolvedComplaints}
 
               </p>
 
@@ -316,14 +398,21 @@ const CitizenDashboard = ({ onLogout }) => {
 
                 </p>
 
-
                 <audio controls src={audioURL}/>
+
+                <button
+                  onClick={submitComplaint}
+                  className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg"
+                >
+
+                  Submit Complaint
+
+                </button>
 
 
               </div>
 
             )}
-
 
           </div>
 
@@ -347,31 +436,29 @@ const CitizenDashboard = ({ onLogout }) => {
 
 
 
-            <div className="border p-4 mb-3 rounded">
+            {myComplaints.map((complaint) => (
 
-              Street light not working
+  <div key={complaint._id} className="border p-4 mb-3 rounded">
 
-              <div className="text-yellow-600">
+    {complaint.complaintText}
 
-                Pending
+    <div
+      className={`mt-2 font-semibold ${
+        complaint.status === "Resolved"
+          ? "text-green-600"
+          : complaint.status === "Pending"
+          ? "text-yellow-600"
+          : "text-blue-600"
+      }`}
+    >
 
-              </div>
+      {complaint.status}
 
-            </div>
+    </div>
 
+  </div>
 
-
-            <div className="border p-4 rounded">
-
-              Water leakage issue
-
-              <div className="text-green-600">
-
-                Resolved
-
-              </div>
-
-            </div>
+))}
 
 
           </div>
@@ -525,7 +612,7 @@ const CitizenDashboard = ({ onLogout }) => {
 
             <input
               type="text"
-              value="Citizen User"
+              value={user?.name || "Citizen User"}
               className="w-full border p-2 rounded"
             />
 
@@ -543,7 +630,7 @@ const CitizenDashboard = ({ onLogout }) => {
 
             <input
               type="email"
-              value="citizen@gmail.com"
+              value={user?.email || "citizen@gmail.com"}
               className="w-full border p-2 rounded"
             />
 

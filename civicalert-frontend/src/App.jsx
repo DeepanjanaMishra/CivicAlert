@@ -16,16 +16,14 @@ function App(){
 
   // DASHBOARD ROUTING
 
-  if(user?.role === "Citizen")
-    return <CitizenDashboard user={user} onLogout={() => setUser(null)} />;
+  if(user?.role === "citizen")
+  return <CitizenDashboard user={user} onLogout={() => setUser(null)} />;
 
+if(user?.role === "authority")
+  return <AuthorityDashboard user={user} onLogout={() => setUser(null)} />;
 
-  if(user?.role === "Authority")
-    return <AuthorityDashboard user={user} onLogout={() => setUser(null)} />;
-
-
-  if(user?.role === "Admin")
-    return <AdminDashboard user={user} onLogout={() => setUser(null)} />;
+if(user?.role === "admin")
+  return <AdminDashboard user={user} onLogout={() => setUser(null)} />;
 
 
 

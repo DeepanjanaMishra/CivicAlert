@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   LayoutDashboard,
   FileText,
@@ -12,30 +12,9 @@ import {
 const AuthorityDashboard = ({ user, onLogout }) => {
 
   const [active, setActive] = useState("dashboard");
+  const [complaints, setComplaints] = useState([]);
 
-  const [complaints, setComplaints] = useState([
 
-  {
-    id: "CA101",
-    issue: "Street light not working in Sector 18",
-    citizen: "Rahul Sharma",
-    emotion: "Angry",
-    priority: "High",
-    urgency: 92,
-    status: "Pending"
-  },
-
-  {
-    id: "CA102",
-    issue: "Water leakage near main road",
-    citizen: "Amit Verma",
-    emotion: "Concerned",
-    priority: "Medium",
-    urgency: 68,
-    status: "In Progress"
-  }
-
-]);
 
   const priorityComplaints =
     complaints.filter(c => c.priority === "High");
@@ -63,6 +42,72 @@ const resolveComplaint = (id) => {
   setComplaints(updated);
 
 };
+
+const fetchComplaints = async () => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(
+      "http://localhost:5000/api/complaints",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    setComplaints(data);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+
+const updateStatus = async (id, status) => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    await fetch(
+      `http://localhost:5000/api/complaints/${id}`,
+      {
+        method: "PUT",
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+
+        body: JSON.stringify({
+          status: status
+        })
+      }
+    );
+
+    fetchComplaints();
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+
+useEffect(() => {
+
+  fetchComplaints();
+
+}, []);
+
 
   return (
 
@@ -154,8 +199,6 @@ const resolveComplaint = (id) => {
 
         )}
 
-
-
         {/* ALL COMPLAINTS */}
 
 
@@ -175,7 +218,7 @@ const resolveComplaint = (id) => {
 
               <ComplaintCard 
               complaint={c}
-              resolveComplaint={resolveComplaint}/>
+              updateStatus={updateStatus}/>
 
             ))}
 
@@ -205,7 +248,7 @@ const resolveComplaint = (id) => {
             {priorityComplaints.map(c => (
 
               <ComplaintCard complaint={c} highlight
-              resolveComplaint={resolveComplaint}/>
+              updateStatus={updateStatus}/>
 
             ))}
 
@@ -523,23 +566,21 @@ const StatCard = ({ title, value, color }) => (
 
 
 
-const ComplaintCard = ({ complaint, highlight, resolveComplaint }) => (
+const ComplaintCard = ({ complaint, highlight, updateStatus }) => (
 
-  <div className={`border p-4 mb-4 rounded ${highlight && "bg-red-50"}`}>
+  <div className={`border p-4 mb-4 rounded ${highlight ? "bg-red-50" : ""}`}>
 
     <h3 className="font-semibold text-lg">
 
-      {complaint.issue}
+      {complaint.complaintText}
 
     </h3>
 
-
     <p>
 
-      Citizen: {complaint.citizen}
+      Citizen: {complaint.citizenId?.name || "Unknown"}
 
     </p>
-
 
     <p>
 
@@ -547,12 +588,11 @@ const ComplaintCard = ({ complaint, highlight, resolveComplaint }) => (
 
       <span className="text-red-600 font-semibold">
 
-        {" "}{complaint.emotion}
+        {" "} {complaint.emotion || "Neutral"}
 
       </span>
 
     </p>
-
 
     <p>
 
@@ -560,48 +600,49 @@ const ComplaintCard = ({ complaint, highlight, resolveComplaint }) => (
 
       <span className="font-bold">
 
-        {" "}{complaint.urgency}
+        {" "} {complaint.urgencyScore || 0}
 
       </span>
 
     </p>
+
     <p>
 
-Status:
+      Status:
 
-<span className={`ml-2 font-bold ${
-  complaint.status === "Resolved"
-  ? "text-green-600"
-  : complaint.status === "Pending"
-  ? "text-yellow-600"
-  : "text-blue-600"
-}`}>
+      <span className={`ml-2 font-bold ${
+        complaint.status === "Resolved"
+        ? "text-green-600"
+        : complaint.status === "Pending"
+        ? "text-yellow-600"
+        : "text-blue-600"
+      }`}>
 
-  {complaint.status}
+        {complaint.status}
 
-</span>
+      </span>
 
-</p>
-
+    </p>
 
     {
-complaint.status !== "Resolved" && (
 
-  <button
+      complaint.status !== "Resolved" && (
 
-    onClick={() => resolveComplaint(complaint.id)}
+        <button
 
-    className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
+          onClick={() => updateStatus(complaint._id, "Resolved")}
 
-  >
+          className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
 
-    Resolve Complaint
+        >
 
-  </button>
+          Resolve Complaint
 
-)
-}
+        </button>
 
+      )
+
+    }
 
   </div>
 

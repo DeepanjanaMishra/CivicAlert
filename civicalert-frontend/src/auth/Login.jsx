@@ -5,37 +5,47 @@ const Login = ({ goToSignup, onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
 
-    let userRole = "";
+  try {
 
-    if(email === "citizen@gmail.com")
-      userRole = "Citizen";
+    const response = await fetch("http://localhost:5000/api/auth/login", {
 
-    else if(email === "authority@gmail.com")
-      userRole = "Authority";
+      method: "POST",
 
-    else if(email === "admin@gmail.com")
-      userRole = "Admin";
+      headers: {
+        "Content-Type": "application/json"
+      },
 
-    else{
-      alert("User not found");
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.message || "Login failed");
       return;
     }
+    console.log("Logged in user:", data.user);
 
+    // store token
+    localStorage.setItem("token", data.token);
 
-    const user = {
+    // send user info to app
+    onLogin(data.user);
 
-      name: email.split("@")[0],
-      email: email,
-      role: userRole
+  } catch (error) {
 
-    };
+    console.error(error);
+    alert("Server error");
 
+  }
 
-    onLogin(user);   // ✅ MUST be inside handleLogin
-
-  };
+};
 
 
   return (
