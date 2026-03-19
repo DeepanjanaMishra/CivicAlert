@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   FileText,
@@ -14,150 +14,125 @@ const AuthorityDashboard = ({ user, onLogout }) => {
   const [active, setActive] = useState("dashboard");
   const [complaints, setComplaints] = useState([]);
 
-
-
   const priorityComplaints =
     complaints.filter(c => c.priority === "High");
 
-const resolveComplaint = (id) => {
+  const pendingComplaints =
+    complaints.filter(c => c.status === "Pending").length;
 
-  const updated = complaints.map(c => {
+  const resolvedComplaints =
+    complaints.filter(c => c.status === "Resolved").length;
 
-    if(c.id === id){
+  const avgUrgency =
+    complaints.length > 0
+      ? Math.round(
+          complaints.reduce((sum, c) => sum + (c.urgencyScore || 0), 0) /
+          complaints.length
+        )
+      : 0;
 
-      return {
 
-        ...c,
+  const fetchComplaints = async () => {
 
-        status: "Resolved"
+    try {
 
-      };
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        "http://localhost:5000/api/complaints",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (Array.isArray(data)) {
+        setComplaints(data);
+      } else {
+        console.error("Invalid response:", data);
+        setComplaints([]);
+      }
+
+    } catch (error) {
+
+      console.error(error);
+      setComplaints([]);
 
     }
 
-    return c;
+  };
 
-  });
 
-  setComplaints(updated);
+  const updateStatus = async (id, status) => {
 
-};
+    try {
 
-const fetchComplaints = async () => {
+      const token = localStorage.getItem("token");
 
-  try {
-
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-      "http://localhost:5000/api/complaints",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
+      await fetch(
+        `http://localhost:5000/api/complaints/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ status })
         }
-      }
-    );
+      );
 
-    const data = await response.json();
+      fetchComplaints();
 
-    setComplaints(data);
+    } catch (error) {
 
-  } catch (error) {
+      console.error(error);
 
-    console.error(error);
+    }
 
-  }
+  };
 
-};
 
-const updateStatus = async (id, status) => {
-
-  try {
-
-    const token = localStorage.getItem("token");
-
-    await fetch(
-      `http://localhost:5000/api/complaints/${id}`,
-      {
-        method: "PUT",
-
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-
-        body: JSON.stringify({
-          status: status
-        })
-      }
-    );
+  useEffect(() => {
 
     fetchComplaints();
 
-  } catch (error) {
+  }, []);
 
-    console.error(error);
-
-  }
-
-};
-
-useEffect(() => {
-
-  fetchComplaints();
-
-}, []);
 
 
   return (
 
     <div className="flex min-h-screen bg-gray-100">
 
-
       {/* SIDEBAR */}
-
 
       <div className="w-64 bg-blue-900 text-white flex flex-col">
 
-
         <div className="p-6 text-2xl font-bold border-b border-blue-700">
-
           CivicAlert Authority
-
         </div>
-
 
         <nav className="flex flex-col p-4 space-y-2 flex-grow">
 
-
           <SidebarButton icon={<LayoutDashboard size={18}/>} text="Dashboard" setActive={setActive}/>
-
           <SidebarButton icon={<FileText size={18}/>} text="All Complaints" value="complaints" setActive={setActive}/>
-
           <SidebarButton icon={<AlertTriangle size={18}/>} text="Priority Complaints" value="priority" setActive={setActive}/>
-
           <SidebarButton icon={<BarChart size={18}/>} text="Analytics" value="analytics" setActive={setActive}/>
-
           <SidebarButton icon={<User size={18}/>} text="Profile" value="profile" setActive={setActive}/>
-
           <SidebarButton icon={<Settings size={18}/>} text="Settings" value="settings" setActive={setActive}/>
 
-
         </nav>
-
-
 
         <button
           onClick={onLogout}
           className="flex items-center gap-3 hover:bg-red-600 p-3 rounded m-4"
         >
-
           <LogOut size={18}/>
-
           Logout
-
         </button>
-
 
       </div>
 
@@ -165,63 +140,50 @@ useEffect(() => {
 
       {/* MAIN CONTENT */}
 
-
-
       <div className="flex-1 p-8">
 
-
         <h1 className="text-3xl font-bold mb-6">
-
           Welcome, {user?.name || "Officer"} 👮
-
         </h1>
 
 
 
         {/* DASHBOARD */}
 
-
         {active === "dashboard" && (
 
           <div className="grid grid-cols-4 gap-6">
 
-
             <StatCard title="Total Complaints" value={complaints.length}/>
-
             <StatCard title="High Priority" value={priorityComplaints.length} color="red"/>
-
-            <StatCard title="Pending" value="5" color="yellow"/>
-
-            <StatCard title="Resolved" value="87" color="green"/>
-
+            <StatCard title="Pending" value={pendingComplaints} color="yellow"/>
+            <StatCard title="Resolved" value={resolvedComplaints} color="green"/>
 
           </div>
 
         )}
 
-        {/* ALL COMPLAINTS */}
 
+
+        {/* ALL COMPLAINTS */}
 
         {active === "complaints" && (
 
           <div className="bg-white rounded-xl shadow p-6">
 
-
             <h2 className="text-xl font-semibold mb-4">
-
               All Complaints
-
             </h2>
-
 
             {complaints.map(c => (
 
-              <ComplaintCard 
-              complaint={c}
-              updateStatus={updateStatus}/>
+              <ComplaintCard
+                key={c._id}
+                complaint={c}
+                updateStatus={updateStatus}
+              />
 
             ))}
-
 
           </div>
 
@@ -231,27 +193,24 @@ useEffect(() => {
 
         {/* PRIORITY */}
 
-
-
         {active === "priority" && (
 
           <div className="bg-white rounded-xl shadow p-6">
 
-
             <h2 className="text-xl font-semibold mb-4 text-red-600">
-
               High Priority Complaints 🚨
-
             </h2>
-
 
             {priorityComplaints.map(c => (
 
-              <ComplaintCard complaint={c} highlight
-              updateStatus={updateStatus}/>
+              <ComplaintCard
+                key={c._id}
+                complaint={c}
+                highlight
+                updateStatus={updateStatus}
+              />
 
             ))}
-
 
           </div>
 
@@ -261,18 +220,13 @@ useEffect(() => {
 
         {/* ANALYTICS */}
 
-
         {active === "analytics" && (
 
           <div className="grid grid-cols-3 gap-6">
 
-
-            <StatCard title="Avg Urgency Score" value="74"/>
-
-            <StatCard title="Angry Complaints" value="42"/>
-
-            <StatCard title="Resolution Rate" value="81%"/>
-
+            <StatCard title="Average Urgency Score" value={avgUrgency}/>
+            <StatCard title="Total Complaints" value={complaints.length}/>
+            <StatCard title="Resolved Complaints" value={resolvedComplaints}/>
 
           </div>
 
@@ -282,236 +236,52 @@ useEffect(() => {
 
         {/* PROFILE */}
 
+        {active === "profile" && (
 
-        {/* PROFILE */}
+          <div className="bg-white p-8 rounded-xl shadow max-w-xl">
 
-{active === "profile" && (
+            <h2 className="text-2xl font-semibold mb-6">
+              Authority Profile
+            </h2>
 
-  <div className="bg-white p-8 rounded-xl shadow max-w-xl">
+            <ProfileField label="Name" value={user?.name}/>
+            <ProfileField label="Email" value={user?.email}/>
+            <ProfileField label="Role" value="Authority"/>
 
-    <h2 className="text-2xl font-semibold mb-6">
-      Authority Profile
-    </h2>
+          </div>
 
-
-    {/* Profile Photo */}
-
-    <div className="flex items-center gap-4 mb-6">
-
-      <div className="w-20 h-20 bg-blue-200 rounded-full flex items-center justify-center text-2xl font-bold text-blue-800">
-
-        {user?.name?.charAt(0) || "A"}
-
-      </div>
-
-      <button className="text-blue-600 hover:underline">
-
-        Edit Photo
-
-      </button>
-
-    </div>
-
-
-
-    {/* Name */}
-
-    <div className="mb-4">
-
-      <label className="block font-semibold mb-1">
-
-        Full Name
-
-      </label>
-
-      <input
-        type="text"
-        defaultValue={user?.name || "Authority User"}
-        className="w-full border p-2 rounded"
-      />
-
-    </div>
-
-
-
-    {/* Email */}
-
-    <div className="mb-4">
-
-      <label className="block font-semibold mb-1">
-
-        Email
-
-      </label>
-
-      <input
-        type="email"
-        defaultValue={user?.email || "authority@gmail.com"}
-        className="w-full border p-2 rounded"
-      />
-
-    </div>
-
-
-
-    {/* Phone */}
-
-    <div className="mb-4">
-
-      <label className="block font-semibold mb-1">
-
-        Phone
-
-      </label>
-
-      <input
-        type="text"
-        defaultValue="+91 9876543210"
-        className="w-full border p-2 rounded"
-      />
-
-    </div>
-
-
-
-    {/* Role */}
-
-    <div className="mb-6">
-
-      <label className="block font-semibold mb-1">
-
-        Role
-
-      </label>
-
-      <input
-        type="text"
-        value="Authority"
-        disabled
-        className="w-full border p-2 rounded bg-gray-100"
-      />
-
-    </div>
-
-
-
-    <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-
-      Save Changes
-
-    </button>
-
-
-  </div>
-
-)}
+        )}
 
 
 
         {/* SETTINGS */}
 
-{active === "settings" && (
+        {active === "settings" && (
 
-  <div className="bg-white p-8 rounded-xl shadow max-w-xl">
+          <div className="bg-white p-8 rounded-xl shadow max-w-xl">
 
-    <h2 className="text-2xl font-semibold mb-6">
+            <h2 className="text-2xl font-semibold mb-6">
+              Settings
+            </h2>
 
-      Authority Settings
+            <div className="mb-6">
+              <label className="block font-semibold mb-2">Language</label>
+              <select className="w-full border p-2 rounded">
+                <option>English</option>
+                <option>Hindi</option>
+                <option>Hinglish</option>
+              </select>
+            </div>
 
-    </h2>
+            <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+              Save Settings
+            </button>
 
+          </div>
 
-    {/* Language */}
-
-    <div className="mb-6">
-
-      <label className="block font-semibold mb-2">
-
-        Language
-
-      </label>
-
-      <select className="w-full border p-2 rounded">
-
-        <option>English</option>
-
-        <option>Hindi</option>
-
-        <option>Hinglish</option>
-
-      </select>
-
-    </div>
-
-
-
-    {/* Notifications */}
-
-    <div className="mb-6 flex justify-between items-center">
-
-      <span className="font-semibold">
-
-        Enable Notifications
-
-      </span>
-
-      <input type="checkbox" defaultChecked />
-
-    </div>
-
-
-
-    {/* Dark Mode */}
-
-    {/*<div className="mb-6 flex justify-between items-center">
-
-      <span className="font-semibold">
-
-        Dark Mode
-
-      </span>
-
-      <input type="checkbox"/>
-
-    </div>*/}
-
-
-
-    {/* Change Password */}
-
-    <div className="mb-6">
-
-      <label className="block font-semibold mb-2">
-
-        Change Password
-
-      </label>
-
-      <input
-        type="password"
-        placeholder="Enter new password"
-        className="w-full border p-2 rounded"
-      />
-
-    </div>
-
-
-
-    <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-
-      Save Settings
-
-    </button>
-
-
-  </div>
-
-)}
-
-
+        )}
 
       </div>
-
 
     </div>
 
@@ -523,46 +293,44 @@ export default AuthorityDashboard;
 
 
 
-/* COMPONENTS */
-
-
-
 const SidebarButton = ({ icon, text, value, setActive }) => (
 
   <button
     onClick={()=>setActive(value || "dashboard")}
     className="flex items-center gap-2 p-3 hover:bg-blue-700 rounded"
   >
-
     {icon}
-
     {text}
-
   </button>
 
 );
 
 
 
-const StatCard = ({ title, value, color }) => (
+const StatCard = ({ title, value, color }) => {
 
-  <div className="bg-white p-6 rounded shadow">
+  const colorMap = {
+    red: "text-red-600",
+    yellow: "text-yellow-600",
+    green: "text-green-600",
+    blue: "text-blue-600"
+  };
 
-    <p className="text-gray-500">
+  return (
 
-      {title}
+    <div className="bg-white p-6 rounded shadow">
 
-    </p>
+      <p className="text-gray-500">{title}</p>
 
-    <h2 className={`text-3xl font-bold text-${color || "blue"}-600`}>
+      <h2 className={`text-3xl font-bold ${colorMap[color] || "text-blue-600"}`}>
+        {value}
+      </h2>
 
-      {value}
+    </div>
 
-    </h2>
+  );
 
-  </div>
-
-);
+};
 
 
 
@@ -571,78 +339,48 @@ const ComplaintCard = ({ complaint, highlight, updateStatus }) => (
   <div className={`border p-4 mb-4 rounded ${highlight ? "bg-red-50" : ""}`}>
 
     <h3 className="font-semibold text-lg">
-
       {complaint.complaintText}
-
     </h3>
 
-    <p>
-
-      Citizen: {complaint.citizenId?.name || "Unknown"}
-
-    </p>
+    <p>Citizen: {complaint.citizenId?.name || "Unknown"}</p>
 
     <p>
-
       Emotion:
-
       <span className="text-red-600 font-semibold">
-
         {" "} {complaint.emotion || "Neutral"}
-
       </span>
-
     </p>
 
     <p>
-
       Urgency Score:
-
       <span className="font-bold">
-
         {" "} {complaint.urgencyScore || 0}
-
       </span>
-
     </p>
 
     <p>
-
       Status:
-
       <span className={`ml-2 font-bold ${
         complaint.status === "Resolved"
-        ? "text-green-600"
-        : complaint.status === "Pending"
-        ? "text-yellow-600"
-        : "text-blue-600"
+          ? "text-green-600"
+          : complaint.status === "Pending"
+          ? "text-yellow-600"
+          : "text-blue-600"
       }`}>
-
         {complaint.status}
-
       </span>
-
     </p>
 
-    {
+    {complaint.status !== "Resolved" && (
 
-      complaint.status !== "Resolved" && (
+      <button
+        onClick={() => updateStatus(complaint._id, "Resolved")}
+        className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
+      >
+        Resolve Complaint
+      </button>
 
-        <button
-
-          onClick={() => updateStatus(complaint._id, "Resolved")}
-
-          className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
-
-        >
-
-          Resolve Complaint
-
-        </button>
-
-      )
-
-    }
+    )}
 
   </div>
 
@@ -654,15 +392,11 @@ const ProfileField = ({ label, value }) => (
 
   <div className="mb-4">
 
-    <label className="font-semibold">
-
-      {label}
-
-    </label>
+    <label className="font-semibold">{label}</label>
 
     <input
       className="border p-2 w-full"
-      value={value}
+      value={value || ""}
       readOnly
     />
 
