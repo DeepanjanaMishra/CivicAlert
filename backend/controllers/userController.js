@@ -15,3 +15,22 @@ export const getUsers = async (req, res) => {
   }
 
 };
+export const updateUserStatus = async (req, res) => {
+
+  try {
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+
+    res.json(user);
+
+  } catch (error) {
+
+    res.status(500).json({ message: error.message });
+
+  }
+
+};
