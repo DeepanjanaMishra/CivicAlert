@@ -142,11 +142,18 @@ const CitizenDashboard = ({ user, onLogout }) => {
 
     const data = await response.json();
 
-    setMyComplaints(data);
+    // Ensure we always store an array
+    if (Array.isArray(data)) {
+      setMyComplaints(data);
+    } else {
+      console.error("Unexpected response:", data);
+      setMyComplaints([]);
+    }
 
   } catch (error) {
 
     console.error(error);
+    setMyComplaints([]);
 
   }
 
