@@ -8,6 +8,7 @@ import {
   updateComplaintStatus,
   getMyComplaints
 } from "../controllers/complaintController.js";
+import upload from "../middleware/multer.js";
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ router.post(
   "/",
   verifyToken,
   allowRoles("citizen"),
+  upload.single("audio"),
   createComplaint
 );
 
