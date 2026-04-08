@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
     enum: ["citizen", "authority", "admin"],
     default: "citizen"
   },
+  status: {
+    type: String,
+    enum: ["Active", "Blocked"],
+    default: "Active"
+  },
 
   createdAt: {
     type: Date,
