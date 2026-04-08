@@ -12,14 +12,21 @@ const complaintSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  transcription: String,
 
   audioUrl: {
-    type: String
+    type: String,
+    default: null
   },
 
   emotion: {
     type: String,
     default: "neutral"
+  },
+
+  emotionConfidence: {
+  type: Number,
+  default: 0
   },
 
   urgencyScore: {
@@ -35,15 +42,33 @@ const complaintSchema = new mongoose.Schema({
 
   assignedAuthority: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    default: null
   },
 
-  createdAt: {
-    type: Date,
-    default: Date.now
+  keywords: {
+    type: [String],
+    default: []
+  },
+
+  context: {
+    type: String,
+    default: "General"
+  },
+
+  priority: {
+    type: String,
+    enum: ["Low", "Medium", "High", "Critical"],
+    default: "Low"
+  },
+
+  department: {
+    type: String,
+    default: "General Administration"
   }
 
-});
+}, { timestamps: true });   // automatically adds createdAt & updatedAt
+
 
 const Complaint = mongoose.model("Complaint", complaintSchema);
 
