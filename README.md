@@ -6,37 +6,59 @@ CivicAlert is a full-stack AI-based complaint management system that enhances tr
 Instead of treating all complaints equally, the system prioritizes issues intelligently so that critical problems receive faster attention.
 
 Key Features
+
 Voice-based complaint submission
+
 Speech-to-text conversion using Whisper
+
 Emotion detection from audio
+
 Intelligent urgency scoring
+
 Automatic department assignment
+
 Role-based dashboards (Citizen, Authority, Admin)
+
 System Architecture
 
 User (Voice/Text)
+
 → Frontend (React)
+
 → Backend (Node.js + Express)
+
 → AI Processing Pipeline:
 
 Whisper API (speech to text)
+
 Emotion Detection API
+
 Keyword extraction
+
 Context classification
+
 Urgency scoring
+
 → MongoDB
+
 → Dashboard visualization
+
 Tech Stack
 
 Frontend: React.js, Tailwind CSS
+
 Backend: Node.js, Express.js
+
 Database: MongoDB, Mongoose
 
 AI Components:
 
 Whisper (speech-to-text)
+
 Custom emotion detection model
+
 Librosa (audio processing)
+
 Project Structure
 
 CivicAlert/
@@ -106,24 +128,41 @@ Frontend server
 
 
 How It Works
+
 User records a complaint
+
 Audio is uploaded via frontend
+
 Backend sends audio to:
+
 Whisper API → transcription
+
 Emotion API → emotion detection
+
 Analyzer processes:
+
 Keywords
+
 Context
+
 Urgency score
+
 Priority
+
 Department
+
 Complaint is stored in MongoDB
+
 Displayed in dashboards
 
 Future Scope
+
 Mobile application
+
 Real-time deployment
+
 Advanced analytics
+
 Improved AI models
 
 License
