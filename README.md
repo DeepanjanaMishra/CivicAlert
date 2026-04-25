@@ -1,86 +1,78 @@
 CivicAlert
-AI-Powered Emotion and Context Aware Citizen Grievance System
+AI-Powered Emotion & Context Aware Citizen Grievance System
 
-CivicAlert is a full-stack AI-based complaint management system that enhances traditional reporting platforms by analyzing emotion, context, and keywords to determine the urgency of complaints.
+CivicAlert is an intelligent, full-stack complaint management system designed to improve how civic issues are handled.
+Instead of treating all complaints equally, the system analyzes voice, emotion, and contextual signals to determine urgency and prioritize issues accordingly.
 
-Instead of treating all complaints equally, the system prioritizes issues intelligently so that critical problems receive faster attention.
+Overview
+
+Traditional complaint systems lack prioritization and context awareness.
+CivicAlert addresses this by integrating an AI pipeline that evaluates complaints beyond text, enabling faster and more meaningful responses.
 
 Key Features
+Voice-Based Complaint Submission
+Users can submit complaints through audio, improving accessibility.
+Speech-to-Text Processing
+Converts voice input into structured text using Whisper.
+Emotion-Aware Analysis
+Detects emotional tone (e.g., anger, fear) to understand severity.
+Dynamic Urgency Scoring
+Combines text, keywords, and emotion to compute a priority score.
+Automated Department Routing
+Assigns complaints to relevant departments without manual intervention.
+Role-Based Dashboards
+Separate interfaces for citizens, authorities, and administrators with analytics.
+System Workflow
 
-Voice-based complaint submission
+User Input (Voice/Text)
+→ React Frontend
+→ Node.js Backend
+→ AI Processing Layer
 
-Speech-to-text conversion using Whisper
+Speech-to-Text (Whisper API)
+Emotion Detection (Flask API)
+Context & Keyword Analysis
+Urgency Scoring Engine
+→ MongoDB Database
+→ Dashboard Visualization
+Technology Stack
 
-Emotion detection from audio
+Frontend
+React.js, Tailwind CSS
 
-Intelligent urgency scoring
+Backend
+Node.js, Express.js
 
-Automatic department assignment
+Database
+MongoDB with Mongoose
 
-Role-based dashboards (Citizen, Authority, Admin)
+AI & Processing
 
-System Architecture
-
-User (Voice/Text)
-
-→ Frontend (React)
-
-→ Backend (Node.js + Express)
-
-→ AI Processing Pipeline:
-
-Whisper API (speech to text)
-
-Emotion Detection API
-
-Keyword extraction
-
-Context classification
-
-Urgency scoring
-
-→ MongoDB
-
-→ Dashboard visualization
-
-Tech Stack
-
-Frontend: React.js, Tailwind CSS
-
-Backend: Node.js, Express.js
-
-Database: MongoDB, Mongoose
-
-AI Components:
-
-Whisper (speech-to-text)
-
-Custom emotion detection model
-
-Librosa (audio processing)
-
+Whisper (Speech-to-Text)
+Custom Emotion Detection Model
+Librosa (Audio Feature Extraction)
 Project Structure
 
 CivicAlert/
-├── civicalert-frontend/
+├── frontend/
 ├── backend/
 │ ├── controllers/
 │ ├── routes/
 │ ├── models/
 │ ├── middleware/
 │ ├── utils/
-│ ├── emotion-api/app.py
-│ ├── whisper-api.py
+│ ├── emotion-api/
+│ ├── whisper-api/
 │ └── uploads/
 
-How to Run the Project
-1. Clone the repository
+Getting Started
+Clone Repository
 
 git clone https://github.com/your-username/CivicAlert.git
 
 cd CivicAlert
 
-2. Backend Setup
+Backend Setup
 
 cd backend
 npm install
@@ -90,81 +82,62 @@ Create a .env file:
 MONGO_URI=your_mongodb_connection
 JWT_SECRET=your_secret_key
 
-Run backend:
+Start backend:
 
 npm run dev
 
-3. Frontend Setup
+Frontend Setup
 
 cd frontend
 npm install
 npm run dev
 
-4. Run Emotion Detection API
+Run AI Services
 
+Emotion Detection API
 cd backend/emotion-api
 python app.py
 
-Endpoint:
-http://127.0.0.1:5002/predict-emotion
+Runs on:
+http://127.0.0.1:5002
 
-5. Run Whisper API
-
+Whisper Speech-to-Text API
 cd backend/whisper-api
 python app.py
 
-Endpoint:
-http://127.0.0.1:5001/transcribe
+Runs on:
+http://127.0.0.1:5001
 
-Run Order
-
-Backend server
-
-Emotion API (port 5002)
-
-Whisper API (port 5001)
-
-Frontend server
-
-
-How It Works
-
-User records a complaint
-
-Audio is uploaded via frontend
-
-Backend sends audio to:
-
-Whisper API → transcription
-
-Emotion API → emotion detection
-
-Analyzer processes:
-
+Execution Flow
+User submits complaint (voice/text)
+Audio is processed through AI services
+System extracts:
+Transcription
+Emotion
 Keywords
+Urgency score and priority are calculated
+Complaint is stored and routed
+Dashboards display insights and updates
+Example Output
 
-Context
+Input:
+"Road conditions are dangerous and unsafe to walk"
 
-Urgency score
+System Output:
 
-Priority
+Emotion: Fearful
+Urgency Score: High
+Priority: Critical
+Department: Infrastructure
+Future Enhancements
+Mobile application support
+Real-time deployment for smart city use cases
+Advanced analytics and prediction models
+Integration with government systems
+Author
 
-Department
+Deepanjana Mishra
 
-Complaint is stored in MongoDB
+Note
 
-Displayed in dashboards
-
-Future Scope
-
-Mobile application
-
-Real-time deployment
-
-Advanced analytics
-
-Improved AI models
-
-License
-
-This project is for academic and demonstration purposes.
+This project is developed for academic and demonstration purposes, showcasing the integration of full-stack development with AI-driven analysis.
