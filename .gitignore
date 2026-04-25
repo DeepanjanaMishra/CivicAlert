@@ -2,4 +2,6 @@ backend/ml_models/emotion_model/*.npy
 backend/ml_models/emotion_model/*.zip
 backend/uploads/*.wav
 backend/.env
+.venv
+.tf_env
 
