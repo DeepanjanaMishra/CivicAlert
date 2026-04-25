@@ -95,10 +95,15 @@ Endpoint:
 http://127.0.0.1:5001/transcribe
 
 Run Order
+
 Backend server
+
 Emotion API (port 5002)
+
 Whisper API (port 5001)
+
 Frontend server
+
 
 How It Works
 User records a complaint
