@@ -4,4 +4,5 @@ backend/uploads/*.wav
 backend/.env
 .venv
 tf_env
+.vscode
 
