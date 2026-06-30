@@ -9,6 +9,12 @@ import {
   Settings,
   LogOut
 } from "lucide-react";
+import EmotionChart from "../components/charts/EmotionChart";
+import StatusChart from "../components/charts/StatusChart";
+import DepartmentChart from "../components/charts/DepartmentChart";
+import PriorityChart from "../components/charts/PriorityChart";
+import TopIssuesChart from "../components/charts/TopIssuesChart";
+import TimelineChart from "../components/charts/TimelineChart";
 
 const AdminDashboard = ({ user, onLogout }) => {
 
@@ -177,6 +183,37 @@ const AdminDashboard = ({ user, onLogout }) => {
               <StatCard title="High Urgency" value={highUrgency}/>
 
             </div>
+            <h2 className="text-3xl font-bold mb-6 mt-10">
+  Admin Analytics Dashboard
+</h2>
+
+<div className="grid grid-cols-2 gap-6">
+
+  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+    <StatusChart complaints={complaints}/>
+  </div>
+
+  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+    <PriorityChart complaints={complaints}/>
+  </div>
+
+  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+    <DepartmentChart complaints={complaints}/>
+  </div>
+
+  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+    <TimelineChart complaints={complaints}/>
+  </div>
+
+  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+    <EmotionChart complaints={complaints}/>
+  </div>
+
+  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+    <TopIssuesChart complaints={complaints}/>
+  </div>
+
+</div>
 
             <div className="bg-white p-6 rounded shadow mt-6">
 
