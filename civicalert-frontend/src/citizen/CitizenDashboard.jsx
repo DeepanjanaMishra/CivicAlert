@@ -1,6 +1,9 @@
 import React, { useState, useRef } from "react";
 import { Mic, FileText, History, User, LogOut } from "lucide-react";
 import { useEffect } from "react";
+import EmotionChart from "../components/charts/EmotionChart";
+import PriorityChart from "../components/charts/PriorityChart";
+import TimelineChart from "../components/charts/TimelineChart";
 const CitizenDashboard = ({ user, onLogout }) => {
 
   const [active, setActive] = useState("dashboard");
@@ -285,53 +288,56 @@ const CitizenDashboard = ({ user, onLogout }) => {
 
         {active === "dashboard" && (
 
-          <div className="grid grid-cols-3 gap-6">
+  <div>
 
+    <div className="grid grid-cols-3 gap-6 mb-10">
 
-            <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-white p-6 rounded-xl shadow">
+        <h2>Total Complaints</h2>
+        <p className="text-3xl text-blue-600 mt-2">
+          {totalComplaints}
+        </p>
+      </div>
 
-              <h2>Total Complaints</h2>
+      <div className="bg-white p-6 rounded-xl shadow">
+        <h2>Pending</h2>
+        <p className="text-3xl text-yellow-500 mt-2">
+          {pendingComplaints}
+        </p>
+      </div>
 
-              <p className="text-3xl text-blue-600 mt-2">
+      <div className="bg-white p-6 rounded-xl shadow">
+        <h2>Resolved</h2>
+        <p className="text-3xl text-green-600 mt-2">
+          {resolvedComplaints}
+        </p>
+      </div>
 
-                {totalComplaints}
+    </div>
 
-              </p>
+    <h2 className="text-3xl font-bold mb-6">
+      My Complaint Analytics
+    </h2>
 
-            </div>
+    <div className="grid grid-cols-2 gap-6">
 
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <EmotionChart complaints={myComplaints}/>
+      </div>
 
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <PriorityChart complaints={myComplaints}/>
+      </div>
 
-            <div className="bg-white p-6 rounded-xl shadow">
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px] col-span-2">
+        <TimelineChart complaints={myComplaints}/>
+      </div>
 
-              <h2>Pending</h2>
+    </div>
 
-              <p className="text-3xl text-yellow-500 mt-2">
+  </div>
 
-                {pendingComplaints}
-
-              </p>
-
-            </div>
-
-
-
-            <div className="bg-white p-6 rounded-xl shadow">
-
-              <h2>Resolved</h2>
-
-              <p className="text-3xl text-green-600 mt-2">
-
-                {resolvedComplaints}
-
-              </p>
-
-            </div>
-
-
-          </div>
-
-        )}
+)}
 
 
 
