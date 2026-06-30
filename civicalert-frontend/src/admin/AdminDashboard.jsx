@@ -15,6 +15,7 @@ import DepartmentChart from "../components/charts/DepartmentChart";
 import PriorityChart from "../components/charts/PriorityChart";
 import TopIssuesChart from "../components/charts/TopIssuesChart";
 import TimelineChart from "../components/charts/TimelineChart";
+import ThemeToggle from "../components/ThemeToggle";
 
 const AdminDashboard = ({ user, onLogout }) => {
 
@@ -133,9 +134,9 @@ const AdminDashboard = ({ user, onLogout }) => {
 
   return (
 
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 dark:bg-slate-900">
 
-      <div className="w-64 bg-blue-900 text-white flex flex-col">
+      <div className="w-64 bg-blue-900 dark:bg-slate-950 text-white flex flex-col">
 
         <div className="p-6 text-2xl font-bold border-b border-blue-700">
           CivicAlert Admin
@@ -164,11 +165,17 @@ const AdminDashboard = ({ user, onLogout }) => {
       </div>
 
 
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-8 bg-gray-100 dark:bg-slate-900 min-h-screen transition-colors duration-300">
 
-        <h1 className="text-3xl font-bold mb-6">
-          Welcome, {user?.name || "Admin"} 🧑‍💻
-        </h1>
+  <div className="flex justify-between items-center mb-6">
+
+    <h1 className="text-3xl font-bold text-black dark:text-white">
+      Welcome, {user?.name || "Admin"} 🧑‍💻
+    </h1>
+
+    <ThemeToggle />
+
+  </div>
 
 
         {active === "dashboard" && (
@@ -183,7 +190,7 @@ const AdminDashboard = ({ user, onLogout }) => {
               <StatCard title="High Urgency" value={highUrgency}/>
 
             </div>
-            <h2 className="text-3xl font-bold mb-6 mt-10">
+            <h2 className="text-3xl font-bold mb-6 mt-10 text-black dark:text-white">
   Admin Analytics Dashboard
 </h2>
 
@@ -197,7 +204,7 @@ const AdminDashboard = ({ user, onLogout }) => {
     <PriorityChart complaints={complaints}/>
   </div>
 
-  <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+  <div className="bg-white   rounded-2xl shadow p-6 h-[420px]">
     <DepartmentChart complaints={complaints}/>
   </div>
 
@@ -215,30 +222,7 @@ const AdminDashboard = ({ user, onLogout }) => {
 
 </div>
 
-            <div className="bg-white p-6 rounded shadow mt-6">
-
-              <h2 className="text-xl font-semibold mb-4">
-                All Complaints
-              </h2>
-
-              {complaints.map((c) => (
-
-                <div key={c._id} className="border p-4 mb-3 rounded">
-
-                  <p className="font-semibold">{c.complaintText}</p>
-
-                  <p>Citizen: {c.citizenId?.name}</p>
-
-                  <p>Status: <span className="font-bold ml-2">{c.status}</span></p>
-
-                  <p>Urgency Score: <span className="font-bold ml-2">{c.urgencyScore}</span></p>
-
-                </div>
-
-              ))}
-
-            </div>
-
+            
           </div>
 
         )}
