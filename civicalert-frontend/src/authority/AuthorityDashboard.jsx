@@ -8,6 +8,10 @@ import {
   Settings,
   LogOut
 } from "lucide-react";
+import DepartmentChart from "../components/charts/DepartmentChart";
+import PriorityChart from "../components/charts/PriorityChart";
+import EmotionIntensityChart from "../components/charts/EmotionIntensityChart";
+import TimelineChart from "../components/charts/TimelineChart";
 
 const AuthorityDashboard = ({ user, onLogout }) => {
 
@@ -152,17 +156,67 @@ const AuthorityDashboard = ({ user, onLogout }) => {
 
         {active === "dashboard" && (
 
-          <div className="grid grid-cols-4 gap-6">
+  <div>
 
-            <StatCard title="Total Complaints" value={complaints.length}/>
-            <StatCard title="High Priority" value={priorityComplaints.length} color="red"/>
-            <StatCard title="Pending" value={pendingComplaints} color="yellow"/>
-            <StatCard title="Resolved" value={resolvedComplaints} color="green"/>
+    {/* KPI CARDS */}
 
-          </div>
+    <div className="grid grid-cols-4 gap-6 mb-10">
 
-        )}
+      <StatCard
+        title="Total Complaints"
+        value={complaints.length}
+      />
 
+      <StatCard
+        title="High Priority"
+        value={priorityComplaints.length}
+        color="red"
+      />
+
+      <StatCard
+        title="Pending"
+        value={pendingComplaints}
+        color="yellow"
+      />
+
+      <StatCard
+        title="Resolved"
+        value={resolvedComplaints}
+        color="green"
+      />
+
+    </div>
+
+
+    {/* ANALYTICS */}
+
+    <h2 className="text-3xl font-bold mb-6">
+      Authority Analytics
+    </h2>
+
+    <div className="grid grid-cols-2 gap-6">
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <DepartmentChart complaints={complaints}/>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <PriorityChart complaints={complaints}/>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <EmotionIntensityChart complaints={complaints}/>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <TimelineChart complaints={complaints}/>
+      </div>
+
+    </div>
+
+  </div>
+
+)}
 
 
         {/* ALL COMPLAINTS */}
@@ -222,15 +276,54 @@ const AuthorityDashboard = ({ user, onLogout }) => {
 
         {active === "analytics" && (
 
-          <div className="grid grid-cols-3 gap-6">
+  <div>
 
-            <StatCard title="Average Urgency Score" value={avgUrgency}/>
-            <StatCard title="Total Complaints" value={complaints.length}/>
-            <StatCard title="Resolved Complaints" value={resolvedComplaints}/>
+    <h2 className="text-3xl font-bold mb-6">
+      Detailed Analytics
+    </h2>
 
-          </div>
+    <div className="grid grid-cols-3 gap-6 mb-8">
 
-        )}
+      <StatCard
+        title="Average Urgency Score"
+        value={avgUrgency}
+      />
+
+      <StatCard
+        title="Total Complaints"
+        value={complaints.length}
+      />
+
+      <StatCard
+        title="Resolved Complaints"
+        value={resolvedComplaints}
+      />
+
+    </div>
+
+    <div className="grid grid-cols-2 gap-6">
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <DepartmentChart complaints={complaints}/>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <PriorityChart complaints={complaints}/>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <EmotionIntensityChart complaints={complaints}/>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow p-6 h-[420px]">
+        <TimelineChart complaints={complaints}/>
+      </div>
+
+    </div>
+
+  </div>
+
+)}
 
 
 
@@ -254,7 +347,7 @@ const AuthorityDashboard = ({ user, onLogout }) => {
 
 
 
-        {/* SETTINGS */}
+        {/* SETTINGS */}                                                                                                                                                                            
 
         {active === "settings" && (
 
