@@ -134,8 +134,9 @@ Mobile application support
 Real-time deployment for smart city use cases
 Advanced analytics and prediction models
 Integration with government systems
-Author
+Author:
 
+Dhruv Gadia
 Deepanjana Mishra
 
 Note
